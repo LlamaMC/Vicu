@@ -1,4 +1,4 @@
-package com.llamamc.vicu.networking;
+package com.llamamc.vicu.networking.event;
 
 import java.util.List;
 import java.util.Map;

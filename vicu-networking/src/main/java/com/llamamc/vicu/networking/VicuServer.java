@@ -1,10 +1,13 @@
 package com.llamamc.vicu.networking;
 
 import java.util.Collection;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
-import com.llamamc.vicu.api.ISession;
 import com.llamamc.vicu.api.IVicuServer;
 import com.llamamc.vicu.api.event.IEventBus;
+import com.llamamc.vicu.api.session.ISession;
+import com.llamamc.vicu.api.session.SessionState;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.EventLoopGroup;
@@ -13,6 +16,7 @@ import io.netty.channel.nio.NioIoHandler;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 
 public class VicuServer implements IVicuServer {
+	private final Set<ISession> sessions = ConcurrentHashMap.newKeySet();
 	private final IEventBus eventBus;
 	private EventLoopGroup bossGroup;
 	private EventLoopGroup workerGroup;
@@ -34,14 +38,31 @@ public class VicuServer implements IVicuServer {
 
 	@Override
 	public void stop() {
-		// TODO Auto-generated method stub
-		
+		if (bossGroup != null) {
+			bossGroup.shutdownGracefully();
+		}
+		if (workerGroup != null) {
+			workerGroup.shutdownGracefully();
+		}
+	}
+	
+	public void addSession(ISession session) {
+	    sessions.add(session);
+	}
+
+	public void removeSession(ISession session) {
+	    sessions.remove(session);
+	}
+
+	@Override
+	public int getOnlinePlayerCount() {
+	    return (int) sessions.stream()
+	            .filter(s -> s.state() == SessionState.LOGIN || s.state() == SessionState.PLAY)
+	            .count();
 	}
 
 	@Override
 	public Collection<ISession> sessions() {
-		// TODO Auto-generated method stub
-		return null;
+		return sessions;
 	}
-
 }

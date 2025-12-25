@@ -1,4 +1,4 @@
-package com.llamamc.vicu.networking;
+package com.llamamc.vicu.networking.packet;
 
 import com.llamamc.vicu.api.packet.IPacket;
 
