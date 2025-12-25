@@ -45,10 +45,8 @@ public final class Vicu implements IVicu {
 	private static void registerEvents(IEventBus eventBus) {
 		eventBus.subscribe(SessionConnectEvent.class,
 				e -> System.out.println("Client connected: " + e.session().clientAddress()));
-
 		eventBus.subscribe(SessionDisconnectEvent.class,
 				e -> System.out.println("Client disconnected: " + e.session().clientAddress()));
-
 		eventBus.subscribe(PacketReceiveEvent.class, e -> System.out.println("Packet received from "
 				+ e.session().clientAddress() + ", size: " + e.packet().payload().readableBytes()));
 	}
